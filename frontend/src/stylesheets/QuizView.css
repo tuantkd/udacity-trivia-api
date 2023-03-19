@@ -1,0 +1,82 @@
+.quiz-play-holder {
+    width: 30%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.category-holder {
+    margin-top: 16px;
+    font-size: 24px;
+}
+
+.choose-header {
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.play-category {
+    cursor: pointer;
+    margin: 15px;
+}
+
+.play-category:hover {
+    color: dodgerblue;
+}
+
+div.button {
+    margin-top: 20px;
+    margin-left: calc(50% - 50px);
+}
+
+.quiz-question {
+    margin: 12px;
+    font-size: 24px;
+}
+
+.correct {
+    color: green;
+}
+
+.wrong {
+    color: red;
+}
+
+.pagination-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.page-num {
+    margin: 5px;
+    font-weight: bolder;
+    height: 35px;
+    width: 35px;
+    border-radius: 7px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid cornflowerblue;
+    color: cornflowerblue;
+    background-color: white;
+    cursor: pointer;
+}
+  
+div.page-num.active {
+    color: white;
+    background: cornflowerblue;
+}
+
+.btn-submit-form {
+    width: 100%;
+    background-color: dodgerblue;
+    color: white;
+    padding: 10px;
+    align-self: center;
+    border: none;
+    border-radius: 5px;
+    height: 34px;
+    cursor: pointer;
+  }

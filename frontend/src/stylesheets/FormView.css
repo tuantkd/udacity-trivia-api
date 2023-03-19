@@ -1,0 +1,84 @@
+.input-group{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 5px;
+}
+
+.input-group label {
+  width: 10%;
+}
+
+.input-group input {
+  width: 20%;
+}
+
+#add-form {
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+input[type=text]{
+  border:1px solid #aaa;
+  border-radius: 5px;
+  margin:8px 0;
+  outline:none;
+  padding:8px;
+  box-sizing:border-box;
+  transition:.3s;
+  height: 34px;
+}
+
+input[type=text]:focus{
+  border-color:dodgerBlue;
+  box-shadow:0 0 8px 0 dodgerBlue;
+}
+
+
+.input-group .select-dropdown {
+  width: 20%;
+	position: relative;
+	background-color: #E6E6E6;
+	border-radius: 4px;
+}
+.select-dropdown select {
+	font-size: 1rem;
+	font-weight: normal;
+	max-width: 100%;
+	padding: 8px 24px 8px 10px;
+	border: none;
+	background-color: transparent;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	appearance: none;
+}
+.select-dropdown select:active, .select-dropdown select:focus {
+	outline: none;
+	box-shadow: none;
+}
+.select-dropdown:after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	width: 0;
+	height: 0;
+	margin-top: -2px;
+	border-top: 5px solid #aaa;
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
+}
+
+.btn-submit-form {
+  width: 65px;
+  background-color: dodgerblue;
+  color: white;
+  padding: 10px;
+  align-self: center;
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  cursor: pointer;
+}
