@@ -36,7 +36,7 @@ def create_app(test_config=None):
     @app.route('/')
     @cross_origin() 
     def welcome_app(): 
-        return {'App': 'Trivia API Application'}
+        return jsonify({'App': 'Trivia API Application'})
 
     """
     @TODO:
@@ -167,11 +167,6 @@ def create_app(test_config=None):
             "error": 422,
             "message": messages
         }), 422
-    
-    def Convert(list):
-        it = iter(list)
-        res_dct = dict(zip(it, it))
-        return res_dct
 
     return app
 
