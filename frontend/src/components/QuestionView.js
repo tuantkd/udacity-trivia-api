@@ -60,6 +60,7 @@ class QuestionView extends Component {
   }
 
   getByCategory = (id) => {
+    console.log(id);
     $.ajax({
       url: `/categories/${id}/questions`,
       type: 'GET',
@@ -80,7 +81,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`,
+      url: `/search-questions`,
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -108,7 +109,7 @@ class QuestionView extends Component {
     if (action === 'DELETE') {
       if (window.confirm('are you sure you want to delete the question?')) {
         $.ajax({
-          url: `/questions/${id}`, //TODO: update request URL
+          url: `/delete-question/${id}`,
           type: 'DELETE',
           success: (result) => {
             this.getQuestions();
@@ -129,9 +130,11 @@ class QuestionView extends Component {
           <h2 onClick={() => { this.getQuestions(); }}>Categories</h2>
           <ul>
             { Object.keys(this.state.categories).map((id) => (
-              <li key={id} onClick={() => { this.getByCategory(id); }}>
+              <li key={id} onClick={() => { this.getByCategory(this.state.categories[id].id); }}>
                 <div className='categories-icon'>
-                  <div className='text'>{this.state.categories[id].type}</div>
+                  <div className='text'>
+                    {this.state.categories[id].type}
+                  </div>
                   <div className='icon'>
                     <img className='category'
                       alt={`${this.state.categories[id].type.toLowerCase()}`}

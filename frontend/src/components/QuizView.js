@@ -35,9 +35,9 @@ class QuizView extends Component {
   }
 
   selectCategory = ({ type, id = 0 }) => {
-    console.log(id);
-    console.log(type);
-    this.setState({ quizCategory: { type, id } }, this.getNextQuestion);
+    // eslint-disable-next-line react/no-direct-mutation-state
+    this.state.quizCategory = id;
+    this.getNextQuestion();
   };
 
   handleChange = (event) => {
@@ -46,6 +46,7 @@ class QuizView extends Component {
 
   getNextQuestion = () => {
     const previousQuestions = [...this.state.previousQuestions];
+    console.log(previousQuestions);
     if (this.state.currentQuestion.id) {
       previousQuestions.push(this.state.currentQuestion.id);
     }
@@ -110,7 +111,7 @@ class QuizView extends Component {
           {Object.keys(this.state.categories).map((id) => {
             return (
               <div key={id} value={id} className='play-category'
-              onClick={() => this.selectCategory({ type: this.state.categories[id].type, id })}>
+              onClick={() => this.selectCategory({ type: this.state.categories[id].type, id: this.state.categories[id].id })}>
                 {this.state.categories[id].type}
               </div>
             );

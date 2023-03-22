@@ -32,7 +32,7 @@ class FormView extends Component {
   submitQuestion = (event) => {
     event.preventDefault();
     $.ajax({
-      url: '/questions', //TODO: update request URL
+      url: '/create-questions', //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -48,6 +48,7 @@ class FormView extends Component {
       crossDomain: true,
       success: (result) => {
         document.getElementById('add-question-form').reset();
+        alert(result.response);
         return;
       },
       error: (error) => {
@@ -68,7 +69,7 @@ class FormView extends Component {
         <form className='form-view' id='add-question-form' onSubmit={this.submitQuestion}>
           <div className="input-group">
             <label>Question</label>
-            <input type='text' name='question' onChange={this.handleChange} placeholder="Enter question"/>
+            <textarea name='question' onChange={this.handleChange} placeholder="Enter question" rows="3"></textarea>
           </div>
           
           <div className="input-group">

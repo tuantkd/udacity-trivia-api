@@ -18,31 +18,22 @@ class Question extends Component {
     return (
       <div className='Question-holder'>
         <div className='Question'>{question}</div>
+        
         <div className='Question-status'>
           <img className='category'
             alt={`${ category !== undefined ? category.type.toLowerCase() : null }`}
-            src={`${ category !== undefined ? category.type.toLowerCase() : '/question' }.svg`}
-          />
+            src={`${ category !== undefined ? category.type.toLowerCase() : '/question' }.svg`}/>
           <div className='difficulty'>Difficulty: {difficulty}</div>
-          <img
-            src='delete.png'
-            alt='delete'
-            className='delete'
-            onClick={() => this.props.questionAction('DELETE')}
-          />
+          <img src='delete.png' alt='delete' className='delete'
+          onClick={() => this.props.questionAction('DELETE')}/>
         </div>
-        <div
-          className='show-answer button'
-          onClick={() => this.flipVisibility()}
-        >
+
+        <div className='show-answer button' onClick={() => this.flipVisibility()}>
           {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
         </div>
+
         <div className='answer-holder'>
-          <span
-            style={{
-              visibility: this.state.visibleAnswer ? 'visible' : 'hidden',
-            }}
-          >
+          <span style={{ visibility: this.state.visibleAnswer ? 'visible' : 'hidden' }}>
             Answer: {answer}
           </span>
         </div>

@@ -85,7 +85,7 @@ def create_app(test_config=None):
                 'success': True,
                 'questions':formatted_questions[start:end],
                 'total_questions':len(formatted_questions),
-                'current_category': 'History',
+                'current_category': '',
                 'categories': formatted_categories
             })
         except Exception as e:
@@ -98,6 +98,16 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+    @app.route('/delete-question/<int:question_id>', methods=["DELETE"])
+    @cross_origin() 
+    def delete_question(question_id):
+        try:
+            question = Question.query.get_or_404(question_id)
+            db.session.delete(question)
+            db.session.commit()
+            return jsonify({'result': 'Delete question successfully'})
+        except Exception as e:
+            print(e)
 
     """
     @TODO:
@@ -109,6 +119,21 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @cross_origin()
+    @app.route('/create-questions', methods = ['POST'])
+    def create_questions():
+        try:
+            question = Question(
+                question=request.json['question'], 
+                answer=request.json['answer'], 
+                category=request.json['difficulty'], 
+                difficulty=request.json['category']
+            )
+            db.session.add(question)
+            db.session.commit()
+            return jsonify({"response": "Created successfully"})
+        except Exception as e:
+                print(e)
 
     """
     @TODO:
@@ -120,6 +145,29 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+    @cross_origin() 
+    @app.route('/search-questions', methods=['POST'])
+    def search_questions():
+        try:
+            search = request.json['searchTerm']
+            questions = Question.query.filter(Question.question.ilike(f'%{search}%')).all()
+            categories = Category.query.all()
+
+            page = request.args.get('page', 1, type=int)
+            start = (page - 1) * 10
+            end = start + 10
+            formatted_questions = [ques.format() for ques in questions]
+
+            formatted_categories = [cate.format() for cate in categories]
+            return jsonify({
+                'success': True,
+                'questions':formatted_questions[start:end],
+                'total_questions':len(formatted_questions),
+                'current_category': '',
+                'categories': formatted_categories
+            })
+        except Exception as e:
+            print(e)
 
     """
     @TODO:
@@ -129,6 +177,26 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+    def category_questions(category_id):
+        try:
+            category = Category.query.get_or_404(category_id)
+
+            questions = Question.query.filter_by(category=category_id).all()
+            page = request.args.get('page', 1, type=int)
+            start = (page - 1) * 10
+            end = start + 10
+            formatted_questions = [ques.format() for ques in questions]
+
+            return jsonify({
+                'success': True,
+                'questions':formatted_questions[start:end],
+                'total_questions':len(formatted_questions),
+                'current_category': category.type,
+            })
+        except Exception as e:
+            print(e)
+    
 
     """
     @TODO:
@@ -141,6 +209,15 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+    @cross_origin()
+    @app.route('/quizzes', methods = ['POST'])
+    def quizzes():
+        try:
+            previous_questions = request.json['previous_questions']
+            question = Question.query.filter_by(category=request.json['quiz_category']).first()
+            return jsonify({"question": question.format()})
+        except Exception as e:
+            print(e)
 
     """
     @TODO:
