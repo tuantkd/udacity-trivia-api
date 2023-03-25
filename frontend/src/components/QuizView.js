@@ -46,7 +46,6 @@ class QuizView extends Component {
 
   getNextQuestion = () => {
     const previousQuestions = [...this.state.previousQuestions];
-    console.log(previousQuestions);
     if (this.state.currentQuestion.id) {
       previousQuestions.push(this.state.currentQuestion.id);
     }
@@ -70,8 +69,9 @@ class QuizView extends Component {
           previousQuestions: previousQuestions,
           currentQuestion: result.question,
           guess: '',
-          forceEnd: result.question ? false : true,
+          forceEnd: result.force_end ? true : false,
         });
+        console.log(this.state);
         return;
       },
       error: (error) => {
@@ -125,9 +125,9 @@ class QuizView extends Component {
     return (
       <div className='quiz-play-holder'>
         <div className='final-header'>
-          Your Final Score is {this.state.numCorrect}
+          Your Final Score is <span>{this.state.numCorrect}</span>
         </div>
-        <div className='play-again button' onClick={this.restartGame}>
+        <div className='btn-play-again' onClick={this.restartGame}>
           Play Again?
         </div>
       </div>
@@ -153,8 +153,10 @@ class QuizView extends Component {
         <div className={`${evaluate ? 'correct' : 'wrong'}`}>
           {evaluate ? 'You were correct!' : 'You were incorrect'}
         </div>
-        <div className='quiz-answer'>{this.state.currentQuestion.answer}</div>
-        <div className='next-question button' onClick={this.getNextQuestion}>
+        <div className='quiz-answer'>
+          {this.state.currentQuestion.answer}
+        </div>
+        <div className='next-question btn-next-question' onClick={this.getNextQuestion}>
           {' '} Next Question {' '}
         </div>
       </div>

@@ -1,8 +1,18 @@
 .quiz-play-holder {
-    width: 30%;
+    width: 40%;
     margin: 0 auto;
     text-align: center;
     margin-top: 40px;
+    position: relative;
+}
+
+.final-header{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.final-header span{
+    color: blue;
 }
 
 .category-holder {
@@ -36,10 +46,16 @@ div.button {
 
 .correct {
     color: green;
+    margin: 10px;
+}
+
+.quiz-answer{
+    font-weight: bold;
 }
 
 .wrong {
     color: red;
+    margin: 10px;
 }
 
 .pagination-menu {
@@ -79,4 +95,15 @@ div.page-num.active {
     border-radius: 5px;
     height: 34px;
     cursor: pointer;
-  }
+}
+
+.btn-next-question, .btn-play-again{
+    width: 20%;
+    background-color: dodgerblue;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 15px auto;
+    border: none;
+}

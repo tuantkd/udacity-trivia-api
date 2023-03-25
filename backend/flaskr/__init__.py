@@ -214,8 +214,29 @@ def create_app(test_config=None):
     def quizzes():
         try:
             previous_questions = request.json['previous_questions']
-            question = Question.query.filter_by(category=request.json['quiz_category']).first()
-            return jsonify({"question": question.format()})
+            category_id = request.json['quiz_category']
+            question_id = 0
+            force_end = False
+            
+            if(len(previous_questions) > 0):
+                questions = Question.query.filter(Question.id.notin_(previous_questions), Question.category==category_id).all()
+                if len(questions) == 0:
+                    question_id = None
+                for question in questions:
+                    question_id = question.id
+
+            question = Question.query.filter(Question.category==category_id).first()
+            if question_id == 0:
+                force_end = False
+            elif question_id == None:
+                force_end = True
+            else:
+                question = Question.query.filter(Question.category==category_id, Question.id==question_id).first()
+
+            return jsonify({
+                "question": question.format(),
+                "force_end": force_end
+            })
         except Exception as e:
             print(e)
 
