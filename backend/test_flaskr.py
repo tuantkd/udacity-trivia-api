@@ -1,40 +1,78 @@
-import os
 import unittest
-import json
-from flask_sqlalchemy import SQLAlchemy
+import requests
+from dotenv import dotenv_values
 
-from flaskr import create_app
-from models import setup_db, Question, Category
-
+config = dotenv_values(".env")
 
 class TriviaTestCase(unittest.TestCase):
-    """This class represents the trivia test case"""
+    URL = config["FLASK_HOST"]
 
-    def setUp(self):
-        """Define test variables and initialize app."""
-        self.app = create_app()
-        self.client = self.app.test_client
-        self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
-        setup_db(self.app, self.database_path)
+    data = {
+        "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?",
+        "answer": "Tom Cruise",
+        "difficulty": 4,
+        "category": 4
+    }
 
-        # binds the app to the current context
-        with self.app.app_context():
-            self.db = SQLAlchemy()
-            self.db.init_app(self.app)
-            # create all tables
-            self.db.create_all()
-    
-    def tearDown(self):
-        """Executed after reach test"""
-        pass
-
+    data_quizzes = {
+        "previous_questions": [14, 15],
+        "quiz_category": 3
+    }
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
+    def test_get_categories(self):
+        res = requests.get(self.URL + '/get-categories')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json()), 2)
+        print("Test get_categories completed")
 
+
+    def test_get_questions(self):
+        res = requests.get(self.URL + "/get-questions")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json()), 5)
+        print("Test get_questions completed")
+
+
+    def test_delete_question(self):
+        res = requests.delete(self.URL + "/delete-question/38")
+        self.assertEqual(res.status_code, 200)
+        print("Test delete_question completed")
+
+
+    def test_create_question(self):
+        res = requests.post(self.URL + "/create-questions", json=self.data)
+        self.assertEqual(res.status_code, 200)
+        print("Test create_question completed")
+
+
+    def test_search_questions(self):
+        res = requests.post(self.URL + "/search-questions", json={"searchTerm" : "Whose autobiography"})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json()), 5)
+        print("Test search_questions completed")
+        
+
+    def test_categories_questions(self):
+        res = requests.get(self.URL + "/categories/4/questions")
+        self.assertEqual(res.status_code, 200)
+        print("Test categories_questions completed")
+
+
+    def test_quizzes(self):
+        res = requests.post(self.URL + "/quizzes", json=self.data_quizzes)
+        self.assertEqual(res.status_code, 200)
+        print("Test quizzes completed")
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
-    unittest.main()
+    unittest = TriviaTestCase()
+    unittest.test_get_categories()
+    unittest.test_get_questions()
+    unittest.test_delete_question()
+    unittest.test_create_question()
+    unittest.test_search_questions()
+    unittest.test_categories_questions()
+    unittest.test_quizzes()

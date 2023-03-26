@@ -28,6 +28,7 @@ def create_app(test_config=None):
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
     @app.after_request 
+    @cross_origin() 
     def after_request(response): 
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true') 
         response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS') 
@@ -74,17 +75,16 @@ def create_app(test_config=None):
     def get_questions():
         try:
             page = request.args.get('page', 1, type=int)
-            start = (page - 1) * 10
-            end = start + 10
-            questions = Question.query.all()
-            formatted_questions = [ques.format() for ques in questions]
+            per_page = request.args.get('per_page', QUESTIONS_PER_PAGE, type=int)
+            total = Question.query.count()
+            questions = Question.query.paginate(page=page, per_page=per_page)
+            formatted_questions = [ques.format() for ques in questions.items]
+            formatted_categories = [cate.format() for cate in Category.query.all()]
 
-            categories = Category.query.all()
-            formatted_categories = [cate.format() for cate in categories]
             return jsonify({
                 'success': True,
-                'questions':formatted_questions[start:end],
-                'total_questions':len(formatted_questions),
+                'questions': formatted_questions,
+                'total_questions': total,
                 'current_category': '',
                 'categories': formatted_categories
             })
@@ -103,9 +103,8 @@ def create_app(test_config=None):
     def delete_question(question_id):
         try:
             question = Question.query.get_or_404(question_id)
-            db.session.delete(question)
-            db.session.commit()
-            return jsonify({'result': 'Delete question successfully'})
+            Question.delete(question)
+            return jsonify({"result": "Delete question successfully"})
         except Exception as e:
             print(e)
 
@@ -129,8 +128,7 @@ def create_app(test_config=None):
                 category=request.json['difficulty'], 
                 difficulty=request.json['category']
             )
-            db.session.add(question)
-            db.session.commit()
+            Question.insert(question)
             return jsonify({"response": "Created successfully"})
         except Exception as e:
                 print(e)
@@ -180,18 +178,17 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def category_questions(category_id):
         try:
-            category = Category.query.get_or_404(category_id)
-
-            questions = Question.query.filter_by(category=category_id).all()
             page = request.args.get('page', 1, type=int)
-            start = (page - 1) * 10
-            end = start + 10
-            formatted_questions = [ques.format() for ques in questions]
-
+            per_page = request.args.get('per_page', QUESTIONS_PER_PAGE, type=int)
+            total = Question.query.filter_by(category=category_id).count()
+            questions = Question.query.filter_by(category=category_id).paginate(page=page, per_page=per_page)
+            formatted_questions = [ques.format() for ques in questions.items]
+            category = Category.query.get_or_404(category_id)
+            
             return jsonify({
                 'success': True,
-                'questions':formatted_questions[start:end],
-                'total_questions':len(formatted_questions),
+                'questions': formatted_questions,
+                'total_questions': total,
                 'current_category': category.type,
             })
         except Exception as e:
@@ -247,11 +244,11 @@ def create_app(test_config=None):
     """
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({
+        return make_response(jsonify({
             "success": False,
             "error": 404,
             "message": "Not found"
-        }), 404
+        })), 404
     
     @app.errorhandler(422)
     def handle_unprocessable_entity(err):
@@ -260,11 +257,15 @@ def create_app(test_config=None):
             messages = exc.messages
         else:
             messages = ['Invalid request']
-        return jsonify({
+        return make_response(jsonify({
             "success": False,
             "error": 422,
             "message": messages
-        }), 422
+        })), 422
+
+    @app.errorhandler(500)
+    def handle_500_error(_error):
+        return make_response(jsonify({'error': 'Server error'}), 500)
 
     return app
 

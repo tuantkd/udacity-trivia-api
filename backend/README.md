@@ -73,22 +73,177 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ### Documentation Example
 
-`GET '/api/v1.0/categories'`
-
+`GET '/api/v1.0/get-categories'`
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
-
 ```json
 {
-  "1": "Science",
-  "2": "Art",
-  "3": "Geography",
-  "4": "History",
-  "5": "Entertainment",
-  "6": "Sports"
+    "success": True,
+    "categories": [
+      {
+          "id": 1,
+          "type": "Science"
+      },
+      {
+          "id": 2,
+          "type": "Art"
+      },
+      {
+          "id": 3,
+          "type": "Geography"
+      },
+      {
+          "id": 4,
+          "type": "History"
+      },
+      {
+          "id": 5,
+          "type": "Entertainment"
+      },
+      {
+          "id": 6,
+          "type": "Sports"
+      }
+    ],
 }
 ```
+
+`GET '/api/v1.0/get-questions?page=1'`
+- Request Arguments: page=1
+- Returns: An object with `categories`, `current_category`, `questions`, `total_questions`, `success`.
+```json
+{
+    "categories": [
+        {
+            "id": 1,
+            "type": "Science"
+        },
+    ],
+    "current_category": "",
+    "questions": [
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+    ],
+    "success": true,
+    "total_questions": 1
+}
+```
+
+
+`GET '/api/v1.0/delete-question/1'`
+- Request Arguments: id
+- Returns: An object with `result`, message success.
+```json
+{
+  "result": "Delete question successfully"
+}
+
+
+`GET '/api/v1.0/create-questions'`
+- Request Arguments:
+  {
+    "question": "Which country won the first ever soccer World Cup in 1930?",
+    "answer": "Uruguay",
+    "difficulty": "4",
+    "category": "5"
+  }
+- Returns: An object with `response`, message success.
+```json
+{
+  "response": "Created successfully"
+}
+
+
+`GET '/api/v1.0/search-questions'`
+- Request Arguments: searchTerm = "question-name"
+- Returns: An object
+```json
+{
+    "categories": [
+      {
+          "id": 1,
+          "type": "Science"
+      },
+      {
+          "id": 2,
+          "type": "Art"
+      },
+      {
+          "id": 3,
+          "type": "Geography"
+      },
+      {
+          "id": 4,
+          "type": "History"
+      },
+      {
+          "id": 5,
+          "type": "Entertainment"
+      },
+      {
+          "id": 6,
+          "type": "Sports"
+      }
+    ],
+    "current_category": "",
+    "questions": [
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        }
+    ],
+    "success": true,
+    "total_questions": 1
+}
+```
+
+`GET '/api/v1.0/categories/3/question'`
+- Request Arguments: id (category)
+- Returns: An object
+```json
+{
+    "current_category": "Geography",
+    "questions": [
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+    ],
+    "success": true,
+    "total_questions": 1
+}
+
+
+`GET '/api/v1.0/quizzes'`
+- Request Arguments: 
+{
+  "previous_questions": [11,13],
+  "quiz_category": 1
+}
+- Returns: An object
+```json
+{
+    "force_end": false,
+    "question": {
+        "answer": "The Liver",
+        "category": 1,
+        "difficulty": 4,
+        "id": 20,
+        "question": "What is the heaviest organ in the human body?"
+    }
+}
 
 ## Testing
 
