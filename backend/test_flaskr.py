@@ -66,13 +66,27 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         print("Test quizzes completed")
 
+
+    def test_delete_question_error(self):
+        res = requests.delete(self.URL + "/delete-question/90")
+        self.assertEqual(res.status_code, 404)
+        print("Test test_delete_question_error completed")
+
+
+    def test_categories_questions_error(self):
+        res = requests.get(self.URL + "/categories/90/questions")
+        self.assertEqual(res.status_code, 404)
+        print("Test test_categories_questions_error completed")
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest = TriviaTestCase()
-    unittest.test_get_categories()
-    unittest.test_get_questions()
-    unittest.test_delete_question()
-    unittest.test_create_question()
-    unittest.test_search_questions()
-    unittest.test_categories_questions()
-    unittest.test_quizzes()
+    # unittest.test_get_categories()
+    # unittest.test_get_questions()
+    # unittest.test_delete_question()
+    # unittest.test_create_question()
+    # unittest.test_search_questions()
+    # unittest.test_categories_questions()
+    # unittest.test_quizzes()
+    unittest.test_delete_question_error()
+    unittest.test_categories_questions_error()

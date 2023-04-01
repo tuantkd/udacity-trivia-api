@@ -54,8 +54,9 @@ def create_app(test_config=None):
                 'success': True,
                 'categories': formatted_categories
             })
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
         
 
     """
@@ -88,8 +89,9 @@ def create_app(test_config=None):
                 'current_category': '',
                 'categories': formatted_categories
             })
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
 
     """
     @TODO:
@@ -105,8 +107,9 @@ def create_app(test_config=None):
             question = Question.query.get_or_404(question_id)
             Question.delete(question)
             return jsonify({"result": "Delete question successfully"})
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
 
     """
     @TODO:
@@ -130,8 +133,9 @@ def create_app(test_config=None):
             )
             Question.insert(question)
             return jsonify({"response": "Created successfully"})
-        except Exception as e:
-                print(e)
+        except IndexError as e:
+            print(e)
+            abort(404)
 
     """
     @TODO:
@@ -164,8 +168,9 @@ def create_app(test_config=None):
                 'current_category': '',
                 'categories': formatted_categories
             })
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
 
     """
     @TODO:
@@ -191,8 +196,9 @@ def create_app(test_config=None):
                 'total_questions': total,
                 'current_category': category.type,
             })
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
     
 
     """
@@ -234,8 +240,9 @@ def create_app(test_config=None):
                 "question": question.format(),
                 "force_end": force_end
             })
-        except Exception as e:
+        except IndexError as e:
             print(e)
+            abort(404)
 
     """
     @TODO:
