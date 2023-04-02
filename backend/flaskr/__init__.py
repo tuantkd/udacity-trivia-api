@@ -1,5 +1,6 @@
 import json
 import os
+from xml.dom import ValidationErr
 import flask
 from flask import Flask, request, abort, jsonify, make_response
 from flask_cors import CORS, cross_origin
@@ -48,11 +49,16 @@ def create_app(test_config=None):
     @cross_origin() 
     def get_categories():
         try:
-            categories = Category.query.all()
-            formatted_categories = [cate.format() for cate in categories]
+            page = request.args.get('page', 1, type=int)
+            per_page = request.args.get('per_page', QUESTIONS_PER_PAGE, type=int)
+            
+            total = Category.query.count()
+            categories = Category.query.paginate(page=page, per_page=per_page)
+            formatted_categories = [cate.format() for cate in categories.items]
             return jsonify({
-                'success': True,
-                'categories': formatted_categories
+                "success": True,
+                "categories": formatted_categories,
+                "total": total
             })
         except IndexError as e:
             print(e)
@@ -77,11 +83,13 @@ def create_app(test_config=None):
         try:
             page = request.args.get('page', 1, type=int)
             per_page = request.args.get('per_page', QUESTIONS_PER_PAGE, type=int)
+
             total = Question.query.count()
             questions = Question.query.paginate(page=page, per_page=per_page)
             formatted_questions = [ques.format() for ques in questions.items]
-            formatted_categories = [cate.format() for cate in Category.query.all()]
 
+            categories = Category.query.paginate(page=page, per_page=per_page)
+            formatted_categories = [cate.format() for cate in categories.items]
             return jsonify({
                 'success': True,
                 'questions': formatted_questions,
@@ -125,6 +133,16 @@ def create_app(test_config=None):
     @app.route('/create-questions', methods = ['POST'])
     def create_questions():
         try:
+            validate_require = []
+            if request.json['question'] == "":
+                validate_require.append("Please enter a question!")
+
+            if request.json['answer'] == "":
+                validate_require.append("Please enter a answer!")
+
+            if len(validate_require) > 0:
+                return jsonify({"validate": validate_require})
+            
             question = Question(
                 question=request.json['question'], 
                 answer=request.json['answer'], 
@@ -132,10 +150,12 @@ def create_app(test_config=None):
                 difficulty=request.json['category']
             )
             Question.insert(question)
-            return jsonify({"response": "Created successfully"})
-        except IndexError as e:
-            print(e)
-            abort(404)
+            return jsonify({
+                "response": "Created successfully",
+                "validate": validate_require
+            })
+        except ValidationErr as err:
+            return jsonify(err.messages), 400
 
     """
     @TODO:
